@@ -1,11 +1,4 @@
-/*
- * @Author: your name
- * @Date: 2022-04-21 10:30:12
- * @LastEditTime: 2022-04-21 15:03:15
- * @LastEditors: your name
- * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: /xinVue/src/reactivity/baseHandlers.ts
- */
+
 import { extend, isObject } from "../shared"
 import { track, trigger } from "./effect"
 import { reactive, ReactiveFlags, readonly } from "./reactive"

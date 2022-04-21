@@ -28,6 +28,9 @@ export function isReadonly(val) {
   return !!val[ReactiveFlags.IS_READONLY]
 }
 
+export function isProxy(val) {
+  return isReactive(val) || isReadonly(val)
+}
 
 function createActiveObject(raw, baseHandlers) {
   return new Proxy(raw, baseHandlers)
