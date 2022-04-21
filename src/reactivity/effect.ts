@@ -1,5 +1,7 @@
 import { extend } from "../shared";
 
+let activeEffect;
+let shouldTrack;
 class ReactiveEffect {
   private _fn: any;
   deps = [];
@@ -12,13 +14,25 @@ class ReactiveEffect {
   }
   run() {
     activeEffect = this
-    return this._fn()
+    // 会收集依赖
+    if (!this.active) {
+      this._fn()
+    }
+    shouldTrack = true
+    activeEffect = this
+    const result = this._fn()
+    // reset
+    shouldTrack = false
+    return result
   }
 
   stop() {
     if (this.active) {
+      // 清除依赖
       cleanupEffect(this)
+      // 执行副作用
       if (this.onStop) this.onStop();
+      // 设置为stop
       this.active = false
     }
   }
@@ -33,6 +47,7 @@ function cleanupEffect(effect) {
 
 const targetMap = new Map()
 export function track(target, key) {
+  if (!isTracking()) return
   // target -> key -> dep
   let depsMap = targetMap.get(target)
   if (!depsMap) {
@@ -44,10 +59,18 @@ export function track(target, key) {
     dep = new Set()
     depsMap.set(key, dep)
   }
-  if (!activeEffect) return
+
+  // 已经在dep中
+  if (dep.has(activeEffect)) return
   dep.add(activeEffect)
   activeEffect.deps.push(dep)
 }
+
+function isTracking() {
+  return shouldTrack && activeEffect !== undefined
+}
+
+
 export function trigger(target, key) {
   let depsMap = targetMap.get(target)
   let dep = depsMap.get(key)
@@ -58,7 +81,6 @@ export function trigger(target, key) {
 }
 
 
-let activeEffect;
 export function effect(fn, options: any = {}) {
   // fn
   const _effect = new ReactiveEffect(fn, options.scheduler)
