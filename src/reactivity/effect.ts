@@ -1,13 +1,13 @@
-import { extend } from "../shared";
+import { extend } from '../shared'
 
-let activeEffect;
-let shouldTrack;
+let activeEffect
+let shouldTrack
 class ReactiveEffect {
-  private _fn: any;
-  deps = [];
+  private _fn: any
+  deps = []
   active = true
-  public scheduler: Function | undefined;
-  onStop?: () => void;
+  public scheduler: Function | undefined
+  onStop?: () => void
   constructor(fn, scheduler?: Function) {
     this._fn = fn
     this.scheduler = scheduler
@@ -31,7 +31,7 @@ class ReactiveEffect {
       // 清除依赖
       cleanupEffect(this)
       // 执行副作用
-      if (this.onStop) this.onStop();
+      if (this.onStop) this.onStop()
       // 设置为stop
       this.active = false
     }
@@ -43,7 +43,6 @@ function cleanupEffect(effect) {
     dep.delete(effect)
   })
 }
-
 
 const targetMap = new Map()
 export function track(target, key) {
@@ -70,7 +69,6 @@ function isTracking() {
   return shouldTrack && activeEffect !== undefined
 }
 
-
 export function trigger(target, key) {
   let depsMap = targetMap.get(target)
   let dep = depsMap.get(key)
@@ -79,7 +77,6 @@ export function trigger(target, key) {
     else effect.run()
   }
 }
-
 
 export function effect(fn, options: any = {}) {
   // fn
