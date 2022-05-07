@@ -10,7 +10,7 @@ export function setupComponent(instance) {
   // TODO
   // initProps()
   // initSlots()
-
+  // 初始化一个有状态的component
   setupStatefulComponent(instance)
 }
 
@@ -20,7 +20,6 @@ function setupStatefulComponent(instance) {
   if (setup) {
     // function Object
     const setupResult = setup()
-
     handleSetupResult(instance, setupResult)
   }
 }
@@ -32,10 +31,9 @@ function handleSetupResult(instance, setupResult) {
 }
 
 function finishComponentSetup(instance) {
-  throw new Error("Function not implemented.")
   const Component = instance.type
-  if (Component.render) {
-    instance.render = Component.render
-  }
+  // if (Component.render) {
+  instance.render = Component.render
+  // }
 }
 
