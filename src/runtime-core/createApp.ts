@@ -3,6 +3,7 @@ import { createVNode } from "./vnode";
 
 export function createApp(rootComponent) {
   return {
+    // 本来应该接收一个string，暂时先接收一个element实例
     mount(rootContainer) {
       // 先vnode
       // component
