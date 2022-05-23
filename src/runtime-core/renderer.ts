@@ -12,6 +12,8 @@ function patch(vnode, container) {
   // 是element，处理element
   // 如何判断是element还是component
   // processElement()
+
+  // shapeFlags
   if (typeof vnode.type === "string") {
     processElement(vnode, container)
   } else if (isObject(vnode.type)) {
