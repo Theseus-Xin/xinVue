@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <![endif]-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="" />
+  </head>
+  <body>
+    <!--[if lt IE 7]>
+      <p class="browsehappy">
+        You are using an <strong>outdated</strong> browser. Please
+        <a href="#">upgrade your browser</a> to improve your experience.
+      </p>
+    <![endif]-->
+
+    <script>
+      // let activeEffect
+      // const bucket = new WeakMap()
+      // const data = {
+      //   text1: 'hello world',
+      //   text2: 'hello JavaScript',
+      //   text: 'hello vue',
+      // }
+
+      // function effect() {
+      //   document.body.innerText = obj.text
+      // }
+
+      // function effect(fn) {
+      //   // document.body.innerText = obj.text
+      //   activeEffect = fn
+      //   fn()
+      // }
+      // const obj = new Proxy(data, {
+      //   // 拦截读取操作
+      //   get(target, key) {
+      //     // 没有activeEffect 直接return
+      //     if (!activeEffect) return
+      //     // 根据target从桶中取得depsMap，它也是一个Map类型：key->effects
+      //     let depsMap = bucket.get(target)
+      //     // 如果并不存在depsMap,那么新创建一个Map并与target关联。
+      //     if (!depsMap) bucket.set(target, (depsMap = new Map()))
+      //     // 再根据key从depsMap中取得deps，它是一个Set类型
+      //     // 里面存储着所有与当前key相关联的副作用函数：effects
+      //     let deps = depsMap.get(key)
+      //     // 如果deps不存在，同样新建一个Set并与key关联
+      //     if (!deps) depsMap.set(key, (deps = new Set()))
+      //     // 最后将当前激活的副作用函数添加到桶里
+      //     deps.add(activeEffect)
+      //     // 返回属性值
+      //     return target[key]
+      //   },
+      //   set(target, key, newValue) {
+      //     // 设置属性值
+      //     target[key] = newValue
+      //     // 根据target从桶中取得depsMap,key->effects
+      //     const depsMap = bucket.get(target)
+      //     if (!depsMap) return
+      //     // 根据key取得所有的副作用函数。effect
+      //     const effects = depsMap.get(key)
+      //     // 执行副作用函数
+      //     effects && effects.forEach((fn) => fn(0))
+      //     return true
+      //   },
+      // })
+      // effect(() => {
+      //   document.body.innerText = obj.text
+      // })
+      // effect(function effectFn1() {
+      //   obj.text
+      // })
+      // effect(function effectFn2() {
+      //   obj.text
+      // })
+      setTimeout(() => {
+        obj.text = 'hello vue3'
+      }, 1000)
+
+      // 副作用函数
+      function effect() {
+        document.body.innerText = obj.text
+      }
+
+      // 存储副作用函数的桶
+      const bucket = new Set()
+
+      // 原始数据
+      const data = { text: 'hello world' }
+      // 对原始数据代理
+      const obj = new Proxy(data, {
+        // 拦截读取操作
+        get(target, key) {
+          // 将副作用函数effect存入副作用函数桶中
+          bucket.add(effect)
+          // 返回属性值
+          return target[key]
+        },
+        // 拦截设置操作
+        set(target, key, newValue) {
+          // 设置属性值
+          target[key] = newValue
+          // 把副作用函数从桶中取出执行
+          bucket.forEach((fn) => fn())
+          // 返回执行成功
+          return true
+        },
+      })
+    </script>
+  </body>
+</html>

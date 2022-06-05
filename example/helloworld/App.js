@@ -10,7 +10,10 @@ export const App = {
     window.self = this
     return h('div', {
         id: "root",
-        class: "red"
+        class: "red",
+        onClick() {
+          console.log("click");
+        }
       },
       // [h('span', {
       //   class: "red"
