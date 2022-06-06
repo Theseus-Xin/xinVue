@@ -1,7 +1,6 @@
 import { isObject } from "../shared"
 import { ShapeFlags } from "../shared/ShapeFlags"
 import { createComponentInstance, setupComponent } from "./component"
-import { isObject } from '../shared/index';
 
 export function render(vnode, container) {
   // patch 方便后续的递归处理
@@ -23,6 +22,7 @@ function patch(vnode, container) {
     processComponent(vnode, container)
   }
 }
+
 function processElement(vnode: any, container: any) {
   mountElement(vnode, container)
 }

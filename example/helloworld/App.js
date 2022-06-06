@@ -7,7 +7,6 @@ export const App = {
   // <template></template>
   // render
   render () {
-    window.self = this
     return h('div', {
       id: "root",
       class: "red",
