@@ -1,3 +1,5 @@
+import { isObject } from "../shared"
+import { ShapeFlags } from "../shared/ShapeFlags"
 import { createComponentInstance, setupComponent } from "./component"
 import { isObject } from '../shared/index';
 
@@ -12,53 +14,68 @@ function patch(vnode, container) {
   // 是element，处理element
   // 如何判断是element还是component
   // processElement()
-  console.log(vnode.type);
-  if (typeof vnode.type === "string") {
+
+  // shapeFlags
+  const { shapeFlag } = vnode
+  if (shapeFlag & ShapeFlags.ELEMENT) {
     processElement(vnode, container)
-  } else if (isObject(vnode.type)) {
+  } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
     processComponent(vnode, container)
   }
 }
-
-function processElement(vnode, container) {
+function processElement(vnode: any, container: any) {
   mountElement(vnode, container)
 }
 
 function mountElement(vnode: any, container: any) {
-  const { type, props, children } = vnode
-  const el = document.createElement(type)
-
-  if (typeof children === "string") {
-    el.textContent = children
-  } else if (Array.isArray(children)) {
-    children.forEach(v => {
-      patch(v, el)
-    })
+  const { type, props, children, shapeFlag } = vnode;
+  const el = (vnode.el = document.createElement(type))
+  if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
+    el.textContent = children;
+  } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+    mountChildren(children, el)
   }
 
-  // string array
-  for (const key in props) {
-    const val = props[key]
-    el.setAttribute(key, val)
+  if (props) {
+    for (const key in props) {
+      const val = props[key]
+      console.log(key);
+      const isOn = (key: string) => /^on[A-Z]/.test(key)
+      if (isOn(key)) {
+        const event = key.slice(2).toLowerCase()
+        el.addEventListener(event, val)
+      } else {
+        el.setAttribute(key, val)
+      }
+    }
   }
   container.append(el)
 }
 
+function mountChildren(children: any, el: any[]) {
+  children.forEach(v => {
+    patch(v, el)
+  })
+}
+
 function processComponent(vnode, container) {
   // 挂在组件
-  mountedComponent(vnode, container)
+  mountComponent(vnode, container)
 }
 
-function mountedComponent(vnode, container) {
-  const instance = createComponentInstance(vnode)
+function mountComponent(initialVNode, container) {
+  const instance = createComponentInstance(initialVNode)
   setupComponent(instance)
-  setupRenderEffect(instance, container)
+  setupRenderEffect(instance, initialVNode, container)
 }
 
-function setupRenderEffect(instance, container) {
-  const subTree = instance.render()
+function setupRenderEffect(instance, initialVNode, container) {
+  const { proxy } = instance
+  const subTree = instance.render.call(proxy)
   // vnode => patch
   // vnode => element => mountElement
   patch(subTree, container)
-}
 
+  // element => mount
+  initialVNode.el = subTree.el
+}

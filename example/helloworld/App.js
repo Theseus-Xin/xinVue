@@ -1,19 +1,27 @@
-import { h } from '../../lib/guide-mini-vue.esm.js';
+import {
+  h
+} from '../../lib/guide-mini-vue.esm.js';
+window.self = null
 export const App = {
   // .vue
   // <template></template>
   // render
   render () {
+    window.self = this
     return h('div', {
       id: "root",
-      class: ['red', 'hard']
-      // }, 'hi,' + this.msg)
-      //   // string
-      // }, 'hi,mini-vue')
-      // array
+      class: "red",
+      onClick () {
+        console.log("click");
+      }
     },
-      [h("p", { class: "red" }, "hi"), h("p", { class: "blue" }, "mini-vue")]
-    )
+      // [h('span', {
+      //   class: "red"
+      // }, "hi,"), h("span", {
+      //   class: "blue"
+      // }, "mini-vue")])
+      // 'hi,mini-vue')
+      'hi,' + this.msg)
   },
   setup () {
     // composition api
