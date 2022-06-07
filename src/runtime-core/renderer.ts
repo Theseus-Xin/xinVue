@@ -22,7 +22,6 @@ function patch(vnode, container) {
     processComponent(vnode, container)
   }
 }
-
 function processElement(vnode: any, container: any) {
   mountElement(vnode, container)
 }
