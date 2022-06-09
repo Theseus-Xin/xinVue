@@ -30,9 +30,6 @@ function setupStatefulComponent(instance) {
 
   instance.proxy = new Proxy(
     { _: instance }, PublicInstanceProxyHandlers
-    // set() {
-
-    // }
   )
 
   const { setup } = Component
