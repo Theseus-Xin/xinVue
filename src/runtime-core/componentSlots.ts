@@ -7,7 +7,7 @@ function normalizeObjectSlots(children, slots) {
   for (const key in children) {
     if (Object.prototype.hasOwnProperty.call(children, key)) {
       const value = children[key];
-      slots[key] = normalizeSlotValue(value)
+      slots[key] = (props) => normalizeSlotValue(value(props))
     }
   }
 }

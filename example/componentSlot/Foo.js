@@ -10,6 +10,8 @@ export const Foo = {
     // renderSlots
     // 获取到要渲染的元素
     // 获取到渲染的位置
-    return h("div", {}, [renderSlots(this.$slots, "header"), foo, renderSlots(this.$slots, "footer")])
+    // 作用于插槽
+    const age = 18
+    return h("div", {}, [renderSlots(this.$slots, "header", { age }), foo, renderSlots(this.$slots, "footer")])
   }
 }
