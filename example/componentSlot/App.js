@@ -1,5 +1,5 @@
 import {
-  h
+  h, createTextVNode
 } from '../../lib/guide-mini-vue.esm.js';
 import { Foo } from './Foo.js';
 window.self = null
@@ -10,7 +10,8 @@ export const App = {
     // const foo = h(Foo, {}, h("p", {}, "123"))
     // const foo = h(Foo, {}, [h("p", {}, "123"), h("p", {}, "456")])
     const foo = h(Foo, {}, {
-      header: ({ age }) => h("p", {}, "header+" + age),
+      header: ({ age }) => [h("p", {}, "header+" + age),
+      createTextVNode("你好呀")],
       footer: () => h("p", {}, "footer"),
     })
     return h('div', {}, [app, foo])
