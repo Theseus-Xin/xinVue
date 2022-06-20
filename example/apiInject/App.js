@@ -1,16 +1,35 @@
 import {
-  h, getCurrentInstance
+  h, provide, inject
 } from '../../lib/guide-mini-vue.esm.js';
-import { Foo } from './Foo.js';
-window.self = null
-export const App = {
-  name: "App",
+const Provider = {
+  name: "Provider",
+  setup () {
+    provide("foo", "fooVal")
+    provide("bar", "barVal")
+  },
   render () {
-    return h("div", {}, [h("p", {}, "currentInstance dome"), h(Foo)])
+    return h("div", {}, [h("p", {}, "Provider"), h(Consumer)])
+  }
+}
+const Consumer = {
+  name: "Consumer",
+  setup () {
+    const foo = inject("foo")
+    const bar = inject("bar")
+    return {
+      foo,
+      bar
+    }
+  },
+  render () {
+    return h("div", {}, `Consumer: -${this.foo} - ${this.bar}`)
+  }
+}
+export default {
+  name: "App",
+  setup () { },
+  render () {
+    return h("div", {}, [h("p", {}, "apiInject"), h(Provider)])
   },
 
-  setup () {
-    const instance = getCurrentInstance()
-    console.log("APP:", instance);
-  }
 }
