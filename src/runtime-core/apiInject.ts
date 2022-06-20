@@ -4,7 +4,13 @@ export function provide(key, value) {
   // 存
   const currentInstance: any = getCurrentInstance()
   if (currentInstance) {
-    const { provides } = currentInstance
+    let { provides } = currentInstance
+    const parentProvides = currentInstance.parent.provides
+
+    // init
+    if (provides === parentProvides) {
+      provides = currentInstance.provides = Object.create(parentProvides)
+    }
     provides[key] = value
   }
 }
