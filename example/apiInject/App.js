@@ -8,7 +8,14 @@ const Provider = {
     provide("bar", "barVal")
   },
   render () {
-    return h("div", {}, [h("p", {}, "Provider"), h(Consumer)])
+    return h("div", {}, [h("p", {}, "Provider"), h(ProviderTwo)])
+  }
+}
+const ProviderTwo = {
+  name: "ProviderTwo",
+  setup () { },
+  render () {
+    return h("div", {}, [h("p", {}, "ProviderTwo"), h(Consumer)])
   }
 }
 const Consumer = {
