@@ -5,7 +5,7 @@ import { Fragment, Text } from "./vnode"
 import { createAppAPI } from './createApp';
 export function createRenderer(options) {
 
-  const { createElement, patchProp, insert } = options
+  const { createElement: hostCreateElement, patchProp: hostPatchProp, insert: hostInsert } = options
 
   function render(vnode, container) {
     // patch 方便后续的递归处理
@@ -56,7 +56,7 @@ export function createRenderer(options) {
 
   function mountElement(vnode: any, container: any, parentComponent) {
     const { type, props, children, shapeFlag } = vnode;
-    const el = (vnode.el = document.createElement(type))
+    const el = (vnode.el = hostCreateElement(type))
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
       el.textContent = children;
     } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
@@ -66,18 +66,10 @@ export function createRenderer(options) {
     if (props) {
       for (const key in props) {
         const val = props[key]
-        // const isOn = (key: string) => /^on[A-Z]/.test(key)
-        // if (isOn(key)) {
-        //   const event = key.slice(2).toLowerCase()
-        //   el.addEventListener(event, val)
-        // } else {
-        //   el.setAttribute(key, val)
-        // }
-        patchProp(el, key, val)
+        hostPatchProp(el, key, val)
       }
     }
-    // container.append(el)
-    insert(el, container)
+    hostInsert(el, container)
   }
 
   function mountChildren(vnode: any, el: any[], parentComponent) {
