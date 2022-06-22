@@ -75,16 +75,23 @@ export function isTracking() {
 
 
 export function trigger(target, key) {
+
   let depsMap = targetMap.get(target)
   let dep = depsMap.get(key)
   triggerEffects(dep)
 }
 
 export function triggerEffects(dep) {
-  for (const effect of dep) {
+
+  dep.forEach(effect => {
     if (effect.scheduler) effect.scheduler()
     else effect.run()
-  }
+  })
+
+  // for (const effect of dep) {
+  //   if (effect.scheduler) effect.scheduler()
+  //   else effect.run()
+  // }
 }
 
 export function effect(fn, options: any = {}) {

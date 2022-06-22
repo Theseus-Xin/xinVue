@@ -1,4 +1,4 @@
-// import { render } from "./ren derer";
+// import { render } from "./renderer";
 import { createVNode } from "./vnode";
 
 export function createAppAPI(render) {
