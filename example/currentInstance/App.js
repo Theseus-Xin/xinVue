@@ -11,6 +11,5 @@ export const App = {
 
   setup () {
     const instance = getCurrentInstance()
-    console.log("APP:", instance);
   }
 }

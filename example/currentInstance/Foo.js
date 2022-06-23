@@ -5,7 +5,6 @@ export const Foo = {
   name: "Foo",
   setup () {
     const instance = getCurrentInstance()
-    console.log("FOO:", instance);
     return {}
   },
   render () {

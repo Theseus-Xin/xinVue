@@ -1,4 +1,4 @@
-import { isObject } from "../shared"
+import { EMPTY_OBJ, isObject } from "../shared"
 import { ShapeFlags } from "../shared/ShapeFlags"
 import { createComponentInstance, setupComponent } from "./component"
 import { Fragment, Text } from "./vnode"
@@ -61,9 +61,32 @@ export function createRenderer(options) {
   }
 
   function patchElement(n1, n2, container) {
-
+    const oldProps = n1.props || EMPTY_OBJ
+    const newProps = n2.props || EMPTY_OBJ
+    const el = (n2.el = n1.el)
+    patchProps(el, oldProps, newProps)
   }
+  function patchProps(el, oldProps, newProps) {
+    if (oldProps !== newProps) {
+      for (const key in newProps) {
+        if (Object.prototype.hasOwnProperty.call(newProps, key)) {
+          const prevProp = oldProps[key]
+          const nextProp = newProps[key];
+          if (prevProp !== nextProp)
+            hostPatchProp(el, key, prevProp, nextProp)
+        }
+      }
+      if (oldProps !== EMPTY_OBJ) {
+        for (const key in oldProps) {
+          if (Object.prototype.hasOwnProperty.call(oldProps, key))
+            if (!(key in newProps))
+              hostPatchProp(el, key, oldProps[key], null)
 
+        }
+      }
+
+    }
+  }
   function mountElement(vnode: any, container: any, parentComponent) {
     const { type, props, children, shapeFlag } = vnode;
     const el = (vnode.el = hostCreateElement(type))
@@ -76,7 +99,7 @@ export function createRenderer(options) {
     if (props) {
       for (const key in props) {
         const val = props[key]
-        hostPatchProp(el, key, val)
+        hostPatchProp(el, key, null, val)
       }
     }
     hostInsert(el, container)
@@ -102,7 +125,6 @@ export function createRenderer(options) {
   function setupRenderEffect(instance, initialVNode, container) {
     effect(() => {
       if (!instance.isMounted) {
-        console.log("init");
         const { proxy } = instance
         const subTree = (instance.subTree = instance.render.call(proxy))
         // vnode => patch
@@ -113,12 +135,9 @@ export function createRenderer(options) {
         initialVNode.el = subTree.el
         instance.isMounted = true
       } else {
-        console.log("update");
         const { proxy } = instance
         const subTree = instance.render.call(proxy)
         const prevSubTree = instance.subTree
-        console.log("current", subTree);
-        console.log("prevent", prevSubTree);
         instance.subTree = subTree
         patch(prevSubTree, subTree, container, instance)
       }

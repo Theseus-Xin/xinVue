@@ -5,7 +5,6 @@ import {
 import {
   App
 } from './App.js';
-console.log(PIXI);
 const game = new PIXI.Application({
   width: 500,
   height: 500
