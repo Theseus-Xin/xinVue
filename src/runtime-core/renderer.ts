@@ -6,7 +6,13 @@ import { createAppAPI } from './createApp';
 import { effect } from '../reactivity/effect';
 export function createRenderer(options) {
 
-  const { createElement: hostCreateElement, patchProp: hostPatchProp, insert: hostInsert } = options
+  const {
+    createElement: hostCreateElement,
+    patchProp: hostPatchProp,
+    insert: hostInsert,
+    remove: hostRemove,
+    setElementText: hostSetElementText
+  } = options
 
   function render(vnode, container) {
     // patch 方便后续的递归处理
@@ -64,8 +70,34 @@ export function createRenderer(options) {
     const oldProps = n1.props || EMPTY_OBJ
     const newProps = n2.props || EMPTY_OBJ
     const el = (n2.el = n1.el)
+    patchChildren(n1, n2, el)
     patchProps(el, oldProps, newProps)
   }
+
+
+  function patchChildren(n1: any, n2: any, container) {
+    const prevShapeFlag = n1.shapeFlag
+    const { shapeFlag } = n2
+    const c2 = n2.children
+    if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
+      if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+        // 把老的children 清空，
+        unMountChildren(n1.children)
+        // 设置新的text
+        hostSetElementText(container, c2)
+      }
+    }
+  }
+
+  function unMountChildren(children) {
+    for (let i = 0; i < children.length; i++) {
+      const el = children[i].el
+      // remove
+      hostRemove(el)
+
+    }
+  }
+
   function patchProps(el, oldProps, newProps) {
     if (oldProps !== newProps) {
       for (const key in newProps) {
