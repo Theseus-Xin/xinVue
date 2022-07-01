@@ -49,7 +49,7 @@ export function createRenderer(options) {
   }
 
   function processFragment(n1, n2: any, container: any, parentComponent) {
-    mountChildren(n2, container, parentComponent)
+    mountChildren(n2.children, container, parentComponent)
   }
   function processText(n1, n2: any, container: any) {
     const { children } = n2
@@ -62,30 +62,75 @@ export function createRenderer(options) {
     if (!n1) {
       mountElement(n2, container, parentComponent)
     } else {
-      patchElement(n1, n2, container)
+      patchElement(n1, n2, container, parentComponent)
     }
   }
 
-  function patchElement(n1, n2, container) {
+  function patchElement(n1, n2, container, parentComponent) {
     const oldProps = n1.props || EMPTY_OBJ
     const newProps = n2.props || EMPTY_OBJ
     const el = (n2.el = n1.el)
-    patchChildren(n1, n2, el)
+    patchChildren(n1, n2, el, parentComponent)
     patchProps(el, oldProps, newProps)
   }
 
 
-  function patchChildren(n1: any, n2: any, container) {
+  function patchChildren(n1: any, n2: any, container, parentComponent) {
     const prevShapeFlag = n1.shapeFlag
+    const c1 = n1.children
     const { shapeFlag } = n2
     const c2 = n2.children
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
       if (prevShapeFlag & ShapeFlags.ARRAY_CHILDREN) {
         // 把老的children 清空，
         unMountChildren(n1.children)
-        // 设置新的text
+      }
+      // 设置新的text
+      if (c1 !== c2) {
         hostSetElementText(container, c2)
       }
+    } else {
+      if (prevShapeFlag & ShapeFlags.TEXT_CHILDREN) {
+        hostSetElementText(container, "")
+        mountChildren(c2, container, parentComponent)
+      } else {
+        // array diff array
+        patchKeyedChildren(c1, c2, container, parentComponent)
+      }
+    }
+  }
+
+  function patchKeyedChildren(c1, c2, container, parentComponent) {
+    let i = 0, e1 = c1.length - 1, e2 = c2.length - 1
+
+
+    function isSomeVNodeType(n1, n2) {
+      // type key
+      return n1.type === n2.type && n1.key === n2.key
+    }
+    // 左侧
+    while (i <= e1 && i <= e2) {
+      const n1 = c1[i]
+      const n2 = c2[i]
+      if (isSomeVNodeType(n1, n2)) {
+        patch(n1, n2, container, parentComponent)
+      } else {
+        break
+      }
+      i++
+    }
+    console.log(i);
+    // 右侧
+    while (i <= e1 && i <= e2) {
+      const n1 = c1[e1]
+      const n2 = c2[e2]
+      if (isSomeVNodeType(n1, n2)) {
+        patch(n1, n2, container, parentComponent)
+      } else {
+        break
+      }
+      e1--
+      e2--
     }
   }
 
@@ -125,7 +170,7 @@ export function createRenderer(options) {
     if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
       el.textContent = children;
     } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
-      mountChildren(vnode, el, parentComponent)
+      mountChildren(vnode.children, el, parentComponent)
     }
 
     if (props) {
@@ -137,8 +182,8 @@ export function createRenderer(options) {
     hostInsert(el, container)
   }
 
-  function mountChildren(vnode: any, el: any[], parentComponent) {
-    vnode.children.forEach(v => {
+  function mountChildren(children: any, el: any[], parentComponent) {
+    children.forEach(v => {
       patch(null, v, el, parentComponent)
     })
   }
