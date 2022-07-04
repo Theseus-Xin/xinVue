@@ -35,10 +35,26 @@ const prevChildren = [
 ]
 
 const nextChildren = [
+  // h("div", { key: "C" }, "C"),
+  h("div", { key: "D" }, "D"),
   h("div", { key: "A" }, "A"),
   h("div", { key: "B" }, "B"),
-  h("div", { key: "C" }, "C"),
+
+
 ]
+
+// // 4.老的比新的长
+// const prevChildren = [
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B"),
+//   h("div", { key: "C" }, "C"),
+//   h("div", { key: "D" }, "D"),
+// ]
+
+// const nextChildren = [
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B")
+// ]
 
 export default {
   name: "ArrayToText",
