@@ -29,19 +29,17 @@ import { ref, h } from "../../lib/guide-mini-vue.esm.js"
 // ]
 
 // 3.新的比老的长
-const prevChildren = [
-  h("div", { key: "A" }, "A"),
-  h("div", { key: "B" }, "B")
-]
+// const prevChildren = [
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B")
+// ]
 
-const nextChildren = [
-  // h("div", { key: "C" }, "C"),
-  h("div", { key: "D" }, "D"),
-  h("div", { key: "A" }, "A"),
-  h("div", { key: "B" }, "B"),
-
-
-]
+// const nextChildren = [
+//   // h("div", { key: "C" }, "C"),
+//   h("div", { key: "D" }, "D"),
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B"),
+// ]
 
 // // 4.老的比新的长
 // const prevChildren = [
@@ -55,6 +53,25 @@ const nextChildren = [
 //   h("div", { key: "A" }, "A"),
 //   h("div", { key: "B" }, "B")
 // ]
+
+// // 5.中间不同
+const prevChildren = [
+  h("div", { key: "A" }, "A"),
+  h("div", { key: "B" }, "B"),
+  h("div", { key: "C", id: "c-prev" }, "C"),
+  h("div", { key: "D" }, "D"),
+  h("div", { key: "F" }, "F"),
+  h("div", { key: "G" }, "G"),
+]
+
+const nextChildren = [
+  h("div", { key: "A" }, "A"),
+  h("div", { key: "B" }, "B"),
+  h("div", { key: "E" }, "E"),
+  h("div", { key: "C", id: "c-next" }, "C"),
+  h("div", { key: "F" }, "F"),
+  h("div", { key: "G" }, "G"),
+]
 
 export default {
   name: "ArrayToText",
