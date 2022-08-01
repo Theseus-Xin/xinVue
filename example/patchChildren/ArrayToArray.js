@@ -91,24 +91,38 @@ import { ref, h } from "../../lib/guide-mini-vue.esm.js"
 //   h("div", { key: "G" }, "G"),
 // ]
 // 6.最长递增子序列
+// const prevChildren = [
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B"),
+//   h("div", { key: "C" }, "C"),
+//   h("div", { key: "D" }, "D"),
+//   h("div", { key: "E" }, "E"),
+//   h("div", { key: "F" }, "F"),
+//   h("div", { key: "G" }, "G"),
+// ]
+
+// const nextChildren = [
+//   h("div", { key: "A" }, "A"),
+//   h("div", { key: "B" }, "B"),
+//   h("div", { key: "E" }, "E"),
+//   h("div", { key: "C" }, "C"),
+//   h("div", { key: "D" }, "D"),
+//   h("div", { key: "F" }, "F"),
+//   h("div", { key: "G" }, "G"),
+// ]
+// fix
 const prevChildren = [
   h("div", { key: "A" }, "A"),
   h("div", { key: "B" }, "B"),
-  h("div", { key: "C" }, "C"),
-  h("div", { key: "D" }, "D"),
-  h("div", { key: "E" }, "E"),
-  h("div", { key: "F" }, "F"),
-  h("div", { key: "G" }, "G"),
+  h("div", {}, "C"),
+  h("div", { key: "D" }, "D")
 ]
 
 const nextChildren = [
   h("div", { key: "A" }, "A"),
+  h("div", {}, "C"),
   h("div", { key: "B" }, "B"),
-  h("div", { key: "E" }, "E"),
-  h("div", { key: "C" }, "C"),
-  h("div", { key: "D" }, "D"),
-  h("div", { key: "F" }, "F"),
-  h("div", { key: "G" }, "G"),
+  h("div", { key: "D" }, "D")
 ]
 export default {
   name: "ArrayToText",
