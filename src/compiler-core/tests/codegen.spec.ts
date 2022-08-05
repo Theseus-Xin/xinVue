@@ -1,15 +1,23 @@
+import { NodeTypes } from '../src/ast';
 import { generate } from '../src/codegen';
 import { baseParse } from '../src/parse';
 import { transform } from '../src/transform';
+import { transformExpression } from '../src/transforms/transformExpression';
 describe('codegen', () => {
   it('string', () => {
     const ast = baseParse("hi")
     transform(ast)
     const { code } = generate(ast)
+    expect(code).toMatchSnapshot()
+  })
 
-    // 快照（string）
-    // 抓bug
-    // 更新快照（主动更新）
+  it.only('interpolation', () => {
+    const ast = baseParse("{{message}}")
+
+    transform(ast, {
+      nodeTransforms: [transformExpression]
+    })
+    const { code } = generate(ast)
     expect(code).toMatchSnapshot()
   })
 })
