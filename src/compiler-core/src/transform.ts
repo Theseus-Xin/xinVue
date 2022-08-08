@@ -18,7 +18,7 @@ function traverseNode(node: any, context) {
   const nodeTransforms = context.nodeTransforms
   for (let i = 0; i < nodeTransforms.length; i++) {
     const transform = nodeTransforms[i];
-    transform(node)
+    transform(node, context)
   }
 
   switch (node.type) {
@@ -28,6 +28,7 @@ function traverseNode(node: any, context) {
     case NodeTypes.ROOT:
     case NodeTypes.ELEMENT:
       traverseChildren(node, context)
+
       break;
     default:
       break;
