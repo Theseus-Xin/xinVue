@@ -1,11 +1,7 @@
 import { NodeTypes } from "../ast";
+import { isText } from "../utils";
 
 export function transformText(node, context) {
-
-
-  function isText(node) {
-    return node.type === NodeTypes.TEXT || node.type === NodeTypes.INTERPOLATION
-  }
 
   if (node.type === NodeTypes.ELEMENT) {
     return () => {
