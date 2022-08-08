@@ -4,6 +4,7 @@ import { baseParse } from '../src/parse';
 import { transform } from '../src/transform';
 import { transformExpression } from '../src/transforms/transformExpression';
 import { transformElement } from '../src/transforms/transformElement';
+import { transformText } from '../src/transforms/transformText';
 describe('codegen', () => {
   it('string', () => {
     const ast = baseParse("hi")
@@ -22,7 +23,7 @@ describe('codegen', () => {
     expect(code).toMatchSnapshot()
   })
 
-  it.only('element', () => {
+  it('element', () => {
     const ast = baseParse("<div></div>")
 
     transform(ast, {
@@ -31,4 +32,17 @@ describe('codegen', () => {
     const { code } = generate(ast)
     expect(code).toMatchSnapshot()
   })
+  it.only('union', () => {
+    const ast: any = baseParse("<div>hi, {{message}}</div>")
+
+    transform(ast, {
+      nodeTransforms: [transformExpression, transformElement, transformText]
+    })
+
+    // console.log("ast", ast.codegenNode.children);
+
+    const { code } = generate(ast)
+    expect(code).toMatchSnapshot()
+  })
+
 })
